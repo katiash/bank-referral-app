@@ -15,7 +15,22 @@ export default function Home() {
   const [referralLink, setReferralLink] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
+    console.log("🔍 useEffect mounted");
+  
+    if (!auth) {
+      console.log("⚠️ auth is undefined");
+      return;
+    }
+  
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log("✅ Firebase returned user:", currentUser);
+      } else {
+        console.log("❌ No user is signed in.");
+      }
+      setUser(currentUser);
+    });
+  
     return () => unsubscribe();
   }, []);
 
