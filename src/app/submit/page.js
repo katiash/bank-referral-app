@@ -56,7 +56,7 @@ export default function SubmitPage() {
 
         <h1 className="text-2xl font-bold text-green-700 mb-4">Submit a Referral</h1>
         <p className="text-sm mb-6 text-gray-500">
-        Share a bank or card referral you'd like others to benefit from.
+        Share a bank or card referral you&apos;d like others to benefit from.
         </p>
 
         <input
