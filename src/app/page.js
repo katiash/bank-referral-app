@@ -13,6 +13,7 @@ export default function Home() {
   const [referrals, setReferrals] = useState([]);
   const [bank, setBank] = useState('');
   const [referralLink, setReferralLink] = useState('');
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     console.log("🔍 useEffect mounted");
@@ -62,22 +63,28 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-green-700 mb-4">💸 Bank Referral MVP</h1>
 
         {!user ? (
-          <button
-            onClick={() => signInWithPopup(auth, new GoogleAuthProvider())}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-          >
-            Sign in with Google
-          </button>
+          <>
+            <p>Welcome! Sign in to get started.</p>
+            <button
+              onClick={() => signInWithPopup(auth, new GoogleAuthProvider())}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+            >
+              Sign in with Google
+            </button>
+          </>
         ) : (
           <>
             <p className="text-sm mb-4">Signed in as <strong>{user.displayName}</strong></p>
-            <div className="flex items-center gap-2 mb-4">
-              <img 
+            <div className="flex items-center gap-3 mb-4">
+              <img
                 src={user.photoURL}
                 alt="User Avatar"
-                className="w-8 h-8 rounded-full border"
+                className="w-9 h-9 rounded-full border object-cover"
               />
-              <span className="text-sm text-gray-700">{user.email}</span>
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-medium text-gray-900">{user.displayName}</span>
+                <span className="text-xs text-gray-600">{user.email}</span>
+              </div>
             </div>
 
             <button
@@ -87,18 +94,27 @@ export default function Home() {
               Log out
             </button>
 
-            <ReferralForm
+            {/* <ReferralForm
               bank={bank}
               setBank={setBank}
               referralLink={referralLink}
               setReferralLink={setReferralLink}
               onSubmit={addReferral}
-            />
+            /> */}
 
             <div className="mt-8">
               <h3 className="text-xl font-semibold mb-3">All Referrals</h3>
+              <input
+              type="text"
+              placeholder="Search by bank..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="w-full p-2 mb-4 border rounded"
+              />
               <ul className="space-y-3">
-                {referrals.map((ref) => (
+              {referrals
+                .filter((ref) => ref.bank.toLowerCase().includes(filter.toLowerCase()))
+                .map((ref) => (
                   <ReferralCard
                     key={ref.id}
                     bank={ref.bank}
