@@ -94,14 +94,6 @@ export default function Home() {
               Log out
             </button>
 
-            {/* <ReferralForm
-              bank={bank}
-              setBank={setBank}
-              referralLink={referralLink}
-              setReferralLink={setReferralLink}
-              onSubmit={addReferral}
-            /> */}
-
             <div className="mt-8">
               <h3 className="text-xl font-semibold mb-3">All Referrals</h3>
               <input
