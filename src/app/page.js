@@ -71,6 +71,15 @@ export default function Home() {
         ) : (
           <>
             <p className="text-sm mb-4">Signed in as <strong>{user.displayName}</strong></p>
+            <div className="flex items-center gap-2 mb-4">
+              <img 
+                src={user.photoURL}
+                alt="User Avatar"
+                className="w-8 h-8 rounded-full border"
+              />
+              <span className="text-sm text-gray-700">{user.email}</span>
+            </div>
+
             <button
               onClick={() => signOut(auth)}
               className="text-red-500 hover:underline text-sm mb-4"
