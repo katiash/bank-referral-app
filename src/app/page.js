@@ -6,7 +6,8 @@ import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../utils/firebaseConfig';
 
 import ReferralCard from '../components/ReferralCard';
-import ReferralForm from '../components/ReferralForm';
+import Link from 'next/link';
+
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -96,6 +97,9 @@ export default function Home() {
 
             <div className="mt-8">
               <h3 className="text-xl font-semibold mb-3">All Referrals</h3>
+              <Link href="/submit">
+                <button className="bg-green-600 text-white px-4 py-2 rounded-md mb-4 hover:bg-green-700 transition">➕ Submit a Referral</button>
+              </Link>
               <input
               type="text"
               placeholder="Search by bank..."
