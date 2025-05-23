@@ -1,11 +1,11 @@
 export default function ReferralCard({ ref }) {
-  const displayDate = ref.createdAt
-    ? new Date(ref.createdAt).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      })
-    : null;
+  const displayDate = ref.createdAt?.toDate
+  ? ref.createdAt.toDate().toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
 
   return (
     <div className="bg-white rounded-xl shadow-md p-4 mb-4 border border-gray-200">
