@@ -33,9 +33,16 @@ export default function Home() {
       id: doc.id,
       ...doc.data(),
     })) as Referral[];
-    setReferrals(data);
+  
+    const sortedData = data.sort((a, b) => {
+      const dateA = a.createdAt?.toDate?.() ?? new Date(0);
+      const dateB = b.createdAt?.toDate?.() ?? new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  
+    setReferrals(sortedData);
   };
-
+  
   const addReferral = async () => {
     if (!bank) return;
     await addDoc(collection(db, 'referrals'), {
