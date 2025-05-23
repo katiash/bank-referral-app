@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Referral } from '../types/Referral';
+import Toast from './Toast';
 
 interface Props {
   ref: Referral;
@@ -85,6 +86,7 @@ export default function ReferralCard({ ref }: Props) {
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
+        <Toast show={copied} message="✅ Copied to clipboard!" type="success" />
       </div>
 
       {/* 🎁 Friend benefit */}
