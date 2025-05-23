@@ -1,7 +1,13 @@
 'use client';
-import { useState } from 'react';
 
-export default function ReferralCard({ ref }) {
+import React, { useState } from 'react';
+import { Referral } from '../types/Referral';
+
+interface Props {
+  ref: Referral;
+}
+
+export default function ReferralCard({ ref }: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async (text) => {
