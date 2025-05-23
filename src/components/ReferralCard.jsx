@@ -1,19 +1,50 @@
-export default function ReferralCard({ bank, user, referralLink }) {
-    return (
-      <li className="bg-white border rounded-xl p-4 shadow hover:shadow-md transition">
-        <div className="font-semibold text-gray-800">{bank}</div>
-        <div className="text-sm text-gray-500">Shared by: {user}</div>
-        {referralLink && (
-          <a
-            href={referralLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-block text-blue-600 hover:underline text-sm"
-          >
-            Use Referral
-          </a>
-        )}
-      </li>
-    );
-  }
+export default function ReferralCard({ ref }) {
+  const displayDate = ref.createdAt
+    ? new Date(ref.createdAt).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : null;
+
+  return (
+    <div className="bg-white rounded-xl shadow-md p-4 mb-4 border border-gray-200">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-lg font-semibold text-gray-800">{ref.bank}</h2>
+        <span className="text-xs text-gray-500">{ref.accountType}</span>
+      </div>
+
+      {ref.referral?.startsWith('http') ? (
+        <a
+          href={ref.referral}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 text-sm underline break-all"
+        >
+          🔗 Open Referral Link
+        </a>
+      ) : (
+        <p className="text-sm text-gray-700 mb-1">
+          <strong>Referral Code:</strong> {ref.referral}
+        </p>
+      )}
+
+      {ref.friendBenefit && (
+        <p className="text-sm text-gray-700 mt-2">
+          <strong>Friend Gets:</strong> {ref.friendBenefit}
+        </p>
+      )}
+
+      {displayDate && (
+        <p className="text-xs text-gray-500 mt-2">
+          Submitted on: {displayDate}
+        </p>
+      )}
+
+      <div className="mt-3 text-xs text-gray-500">
+        Submitted by: {ref.user || 'Anonymous'}
+      </div>
+    </div>
+  );
+}
   
