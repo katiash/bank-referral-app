@@ -76,6 +76,17 @@ export default function Home() {
         ) : (
           <>
             <p className="text-sm mb-4">Signed in as <strong>{user.displayName}</strong></p>
+            {user && (
+              <div className="mb-4 text-right">
+                <Link
+                  href="/submit"
+                  className="inline-block bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition"
+                >
+                  ➕ Submit a Referral
+                </Link>
+              </div>
+            )}
+            
             <div className="flex items-center gap-3 mb-4">
               <img
                 src={user.photoURL ?? ''}
@@ -110,7 +121,12 @@ export default function Home() {
                 {referrals
                   .filter((ref) => ref.bank.toLowerCase().includes(filter.toLowerCase()))
                   .map((ref) => (
-                    <ReferralCard key={ref.id} ref={ref} />
+                    <ReferralCard
+                    key={ref.id}
+                    ref={ref}
+                    currentUser={user?.uid}
+                    onDelete={fetchReferrals}
+                  />
                   ))}
               </ul>
             )}
@@ -130,8 +146,7 @@ export default function Home() {
       <div className="mt-8 text-sm text-center text-gray-500">
         Spot an error or need help removing a referral?  
         <br />
-        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>
-         or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
+        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a> or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
       </div>
       <footer className="mt-8 text-xs text-center text-gray-400">
         Made with 💛 by Katia

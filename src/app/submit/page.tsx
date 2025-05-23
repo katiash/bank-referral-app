@@ -59,7 +59,11 @@ export default function SubmitPage() {
     setCashbackAvailable('');
     setEarningLimit('');
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
+    
+    setTimeout(() => {
+      setShowToast(false);
+      router.push('/');
+    }, 1500); // ✅ wait 1.5s before redirect
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
@@ -146,8 +150,7 @@ export default function SubmitPage() {
       <div className="mt-8 text-sm text-center text-gray-500">
         Spot an error or need help removing a referral?  
         <br />
-        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>
-         or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
+        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a> or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
       </div>
       <footer className="mt-8 text-xs text-center text-gray-400">
         Made with 💛 by Katia

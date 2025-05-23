@@ -9,9 +9,10 @@ import Toast from './Toast';
 interface Props {
   ref: Referral;
   currentUser?: string;
+  onDelete?: () => void;
 }
 
-export default function ReferralCard({ ref, currentUser }: Props) {
+export default function ReferralCard({ ref, currentUser, onDelete }: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async (text) => {
@@ -27,6 +28,7 @@ export default function ReferralCard({ ref, currentUser }: Props) {
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this referral?')) {
       await deleteDoc(doc(db, 'referrals', id));
+      if (onDelete) onDelete(); // 👈 trigger refresh in parent
       // optionally: show toast or refresh parent component
     }
   };
