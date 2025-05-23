@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 
 export default function ReferralCard({ ref }) {
@@ -22,50 +23,56 @@ export default function ReferralCard({ ref }) {
     : null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-5 mb-4 border border-gray-200">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
-        <div className="flex flex-wrap items-center gap-2">
-          {ref.accountType && (
-            <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
-              🏦 {ref.accountType}
-            </span>
-          )}
-          {ref.cashbackAvailable === 'Yes' && (
-            <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">
-              💵 Cashback
-            </span>
-          )}
-          {ref.referralType === 'code' && (
-            <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">
-              📇 Code Only
-            </span>
-          )}
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 mb-5 transition hover:shadow-md">
+      {/* 🔝 Top section: Bank name + badges + date */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900">{ref.bank}</h2>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {ref.accountType && (
+              <span className="text-xs font-medium bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
+                🏦 {ref.accountType}
+              </span>
+            )}
+            {ref.referralType === 'code' && (
+              <span className="text-xs font-medium bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full">
+                📇 Code Only
+              </span>
+            )}
+          </div>
         </div>
         {displayDate && (
-          <span className="text-xs text-gray-500">
-            Submitted: {displayDate}
-          </span>
+          <div className="mt-2 sm:mt-0 text-xs text-gray-500 sm:text-right">
+            Submitted<br />{displayDate}
+          </div>
         )}
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-800 mb-1">{ref.bank}</h2>
+      {/* 💵 Cashback badge, always separate line */}
+      {ref.cashbackAvailable === 'Yes' && (
+        <div className="mb-3">
+          <span className="text-xs font-medium bg-green-50 text-green-700 px-2 py-1 rounded-full inline-block">
+            💵 Cashback Available
+          </span>
+        </div>
+      )}
 
+      {/* 🔗 Referral link or code */}
       <div className="mb-3">
         {ref.referral?.startsWith('http') ? (
           <a
             href={ref.referral}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 text-sm underline break-all"
+            className="text-blue-600 text-sm underline break-words"
           >
             🔗 Open Referral Link
           </a>
         ) : (
-          <p className="text-sm text-gray-700 mb-1">
+          <p className="text-sm text-gray-700">
             <strong>Referral Code:</strong> {ref.referral}
           </p>
         )}
-
         <button
           onClick={() => handleCopy(ref.referral)}
           className="text-xs text-green-600 underline ml-1 hover:text-green-800"
@@ -74,15 +81,17 @@ export default function ReferralCard({ ref }) {
         </button>
       </div>
 
+      {/* 🎁 Friend benefit */}
       {ref.friendBenefit && (
-        <p className="text-sm text-gray-700 mt-1 leading-snug">
+        <p className="text-sm text-gray-700 leading-relaxed">
           <strong>Friend Gets:</strong> {ref.friendBenefit}
         </p>
       )}
 
-      <div className="mt-3 text-xs text-gray-500">
+      {/* 👤 Attribution */}
+      <p className="mt-4 text-xs text-gray-400">
         Submitted by: {ref.user || 'Anonymous'}
-      </div>
+      </p>
     </div>
   );
 }
