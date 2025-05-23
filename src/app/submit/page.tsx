@@ -1,16 +1,20 @@
 'use client';
 
+
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth, db } from '../../../utils/firebaseConfig';
+import Toast from '../../components/Toast'; // Adjusted path to match the likely correct location
+
 
 export default function SubmitPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [showToast, setShowToast] = useState(false);
   const [bank, setBank] = useState('');
   const [referralLink, setReferralLink] = useState('');
   const [referralTerms, setReferralTerms] = useState('');
@@ -53,7 +57,8 @@ export default function SubmitPage() {
     setAccountType('');
     setCashbackAvailable('');
     setEarningLimit('');
-    alert('Referral submitted!');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
@@ -135,6 +140,7 @@ export default function SubmitPage() {
           Submit Referral
         </button>
       </div>
+      <Toast show={showToast} message="✅ Referral submitted!" type="success" />
     </main>
   );
 }
