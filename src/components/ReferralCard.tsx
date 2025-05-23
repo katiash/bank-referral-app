@@ -1,14 +1,17 @@
 'use client';
 
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../utils/firebaseConfig'; // adjust if needed
 import React, { useState } from 'react';
 import { Referral } from '../types/Referral';
 import Toast from './Toast';
 
 interface Props {
   ref: Referral;
+  currentUser?: string;
 }
 
-export default function ReferralCard({ ref }: Props) {
+export default function ReferralCard({ ref, currentUser }: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async (text) => {
@@ -18,6 +21,13 @@ export default function ReferralCard({ ref }: Props) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to delete this referral?')) {
+      await deleteDoc(doc(db, 'referrals', id));
+      // optionally: show toast or refresh parent component
     }
   };
 
@@ -97,9 +107,18 @@ export default function ReferralCard({ ref }: Props) {
       )}
 
       {/* 👤 Attribution */}
-      <p className="mt-4 text-xs text-gray-400">
-        Submitted by: {ref.user || 'Anonymous'}
-      </p>
+      <div className="mt-4 text-xs text-gray-400 flex justify-between items-center">
+      <span>Submitted by: {ref.user || 'Anonymous'}</span>
+
+      {currentUser === ref.uid && (
+        <button
+          onClick={() => handleDelete(ref.id)}
+          className="text-red-600 hover:underline"
+        >
+          🗑 Delete
+        </button>
+      )}
+    </div>
     </div>
   );
 }

@@ -39,6 +39,7 @@ export default function SubmitPage() {
 
     await addDoc(collection(db, 'referrals'), {
       user: user.displayName,
+      uid: user.uid, // ✅ Save user UID
       bank,
       referral: referralLink,
       referralType,
@@ -141,6 +142,16 @@ export default function SubmitPage() {
         </button>
       </div>
       <Toast show={showToast} message="✅ Referral submitted!" type="success" />
+
+      <div className="mt-8 text-sm text-center text-gray-500">
+        Spot an error or need help removing a referral?  
+        <br />
+        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>
+         or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
+      </div>
+      <footer className="mt-8 text-xs text-center text-gray-400">
+        Made with 💛 by Katia
+      </footer>
     </main>
   );
 }

@@ -42,7 +42,7 @@ export default function Home() {
   
     setReferrals(sortedData);
   };
-  
+
   const addReferral = async () => {
     if (!bank) return;
     await addDoc(collection(db, 'referrals'), {
@@ -127,6 +127,12 @@ export default function Home() {
         </Link>
       )}
 
+      <div className="mt-8 text-sm text-center text-gray-500">
+        Spot an error or need help removing a referral?  
+        <br />
+        Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>
+         or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
+      </div>
       <footer className="mt-8 text-xs text-center text-gray-400">
         Made with 💛 by Katia
       </footer>

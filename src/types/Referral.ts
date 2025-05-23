@@ -10,5 +10,6 @@ export interface Referral {
     cashbackAvailable?: 'Yes' | 'No';
     earningLimit?: string;
     user?: string;
+    uid?: string; // ✅ Added this line
     createdAt?: { toDate: () => Date };
   }
