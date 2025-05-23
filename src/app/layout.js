@@ -13,14 +13,14 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Referral Link Finder",
-  description: "Share and find referral links from friends for bank & credit card offers.",
+  description: "...",
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-32x32.png',
-    apple: '/apple-touch-icon.png',
+    icon: "/favicon.ico",
+    shortcut: "/favicon-32x32.png",
+    apple: "/apple-touch-icon.png",
     other: {
-      rel: 'manifest',
-      url: '/site.webmanifest'
+      rel: "manifest",
+      url: "/site.webmanifest"
     }
   }
 };

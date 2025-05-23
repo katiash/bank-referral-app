@@ -22,9 +22,9 @@ export default function ReferralCard({ ref }) {
     : null;
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 mb-4 border border-gray-200">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-        <div className="flex items-center gap-2 flex-wrap">
+    <div className="bg-white rounded-2xl shadow-md p-5 mb-4 border border-gray-200">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
+        <div className="flex flex-wrap items-center gap-2">
           {ref.accountType && (
             <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
               🏦 {ref.accountType}
@@ -48,9 +48,9 @@ export default function ReferralCard({ ref }) {
         )}
       </div>
 
-      <h2 className="text-md font-semibold text-gray-800">{ref.bank}</h2>
+      <h2 className="text-lg font-semibold text-gray-800 mb-1">{ref.bank}</h2>
 
-      <div className="mb-2 mt-1">
+      <div className="mb-3">
         {ref.referral?.startsWith('http') ? (
           <a
             href={ref.referral}
@@ -75,7 +75,7 @@ export default function ReferralCard({ ref }) {
       </div>
 
       {ref.friendBenefit && (
-        <p className="text-sm text-gray-700 mt-1">
+        <p className="text-sm text-gray-700 mt-1 leading-snug">
           <strong>Friend Gets:</strong> {ref.friendBenefit}
         </p>
       )}
