@@ -187,7 +187,7 @@ export default function SubmitPageContent() {
           />
           <input
             type="text"
-            placeholder="Referral earning limit (e.g. $500/year)"
+            placeholder="Referrer earning limit only (e.g. $500/year) Typically, this should not matter to friends/family who use the link/code, ie will still work on their end."
             value={earningLimit}
             onChange={(e) => setEarningLimit(e.target.value)}
             className="w-full p-2 border rounded-md"
