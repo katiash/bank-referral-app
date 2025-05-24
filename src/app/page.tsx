@@ -7,6 +7,7 @@ import { auth, db } from '../../utils/firebaseConfig';
 import ReferralCard from '../components/ReferralCard';
 import Link from 'next/link';
 import { Referral } from '../types/Referral';
+import Image from 'next/image';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,10 +66,13 @@ export default function Home() {
         ) : (
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <img
-                src={user.photoURL ?? ''}
+              <Image
+                src={user?.photoURL || '/default-avatar.png'}
                 alt="User Avatar"
-                className="w-10 h-10 rounded-full border object-cover"
+                width={90}
+                height={90}
+                className="rounded-full border object-cover"
+                // className="w-10 h-10 rounded-full border object-cover"
               />
               <div>
                 <p className="text-sm text-gray-700">Signed in as <strong>{user.displayName}</strong></p>

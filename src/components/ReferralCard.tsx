@@ -5,6 +5,7 @@ import { Referral } from '../types/Referral';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import Toast from './Toast';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   ref: Referral;
@@ -14,6 +15,7 @@ interface Props {
 
 export default function ReferralCard({ ref, currentUser, onDelete }: Props) {
   const [copied, setCopied] = useState(false);
+  const router = useRouter();
 
   const handleCopy = async (text: string) => {
     try {
@@ -87,12 +89,21 @@ export default function ReferralCard({ ref, currentUser, onDelete }: Props) {
             <strong>Referral Code:</strong> {ref.referral}
           </p>
         )}
-        <button
-          onClick={() => handleCopy(ref.referral)}
-          className="text-xs text-green-600 underline hover:text-green-800 ml-2"
-        >
-          {copied ? 'Copied!' : 'Copy'}
-        </button>
+
+        {/* Copy button below, left-aligned */}
+        <div className="mt-2">
+          <button
+            onClick={() => handleCopy(ref.referral)}
+            className="text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-md px-2 py-1 hover:bg-green-100 transition"
+          >
+            {copied
+              ? '✅ Copied!'
+              : ref.referral?.startsWith('http')
+              ? '📋 Copy Link'
+              : '📋 Copy Referral Code'}
+          </button>
+        </div>
+
         <Toast show={copied} message="✅ Copied to clipboard!" type="success" />
       </div>
 
@@ -103,18 +114,28 @@ export default function ReferralCard({ ref, currentUser, onDelete }: Props) {
         </p>
       )}
 
-      {/* 👤 Attribution + delete */}
-      <div className="mt-4 flex justify-between items-center text-xs text-gray-400">
-        <span>Submitted by: {ref.user || 'Anonymous'}</span>
+      {/* 👤 Attribution */}
+        <p className="mt-4 text-xs text-gray-400">
+          Submitted by: {ref.user || 'Anonymous'}
+        </p>
+
+        {/* 🧩 Action Bar (only for your own records) */}
         {currentUser === ref.uid && (
-          <button
-            onClick={() => handleDelete(ref.id)}
-            className="text-red-600 hover:underline ml-4"
-          >
-            🗑 Delete
-          </button>
+          <div className="mt-3 bg-gray-50 border border-gray-200 rounded-md px-4 py-3 flex flex-wrap items-center justify-end gap-2">
+            <button
+              onClick={() => router.push(`/submit?id=${ref.id}`)}
+              className="inline-flex items-center justify-center text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md px-3 py-1.5 transition"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              onClick={() => handleDelete(ref.id)}
+              className="inline-flex items-center justify-center text-sm font-medium text-red-600 bg-white hover:bg-red-50 border border-red-300 rounded-md px-3 py-1.5 transition"
+            >
+              🗑 Delete
+            </button>
+          </div>
         )}
-      </div>
     </div>
   );
 }
