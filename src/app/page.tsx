@@ -141,7 +141,12 @@ export default function Home() {
                   .map(ref => (
                     <ReferralCard
                       key={ref.id}
-                      referral={{ ...ref, accountType: ref.accountType || 'Unknown', friendBenefit: ref.friendBenefit || 'None', cashbackAvailable: ref.cashbackAvailable ?? false, createdAt: typeof ref.createdAt?.toDate === 'function'
+                      referral={{ ...ref,
+                        user: ref.user || 'Unknown', 
+                        accountType: ref.accountType || 'Unknown', 
+                        friendBenefit: ref.friendBenefit || 'None', 
+                        cashbackAvailable: ref.cashbackAvailable ?? false, 
+                        createdAt: typeof ref.createdAt?.toDate === 'function'
                         ? ref.createdAt.toDate().toISOString()
                         : '' }}
                       isOwner={(ref.uid ?? '') === user?.uid || user?.email === 'ekaterina.shukh@gmail.com'}
