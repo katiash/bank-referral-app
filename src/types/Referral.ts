@@ -7,9 +7,9 @@ export interface Referral {
     referralTerms?: string;
     friendBenefit?: string;
     accountType?: string;
-    cashbackAvailable?: 'Yes' | 'No';
+    cashbackAvailable?: boolean;
     earningLimit?: string;
-    user?: string;
-    uid?: string; // ✅ Added this line
+    user?: string; // ✅ this is used to match current user's UID
+    // uid?: string; // ✅ Added this line
     createdAt?: { toDate: () => Date };
   }

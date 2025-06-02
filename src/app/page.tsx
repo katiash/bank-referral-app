@@ -1,13 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  User
+} from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../utils/firebaseConfig';
 import ReferralCard from '../components/ReferralCard';
 import Link from 'next/link';
 import { Referral } from '../types/Referral';
 import Image from 'next/image';
+import TestBox from '../components/TestBox';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -42,80 +49,86 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-gray-100 min-h-screen py-10 text-gray-800">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Title and Intro */}
-        <div>
-          <h1 className="text-3xl font-bold mb-1">💸 Find & Share Referral Codes</h1>
-          <p className="text-sm text-gray-600">
-            Looking for a referral code for a new credit card or bank bonus? See what others have shared — or share yours.
+
+  <main className="bg-brand-light font-sans bg-watermark min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+  
+      {/* 🔍 TEST BLOCK START */}
+      {/* <div className="bg-brand-gold text-brand-dark p-6 rounded shadow text-center">
+        ✅ Tailwind *is working* with brand colors!
+      </div> */}
+      {/* 🔍 TEST BLOCK END */}
+      <div className="max-w-4xl mx-auto space-y-10">
+    
+        {/* Title and Description */}
+        <div className="text-center">
+          <h1 className="text-4xl font-serif text-brand-dark mb-2">💸 Bank Referral Finder</h1>
+          <p className="text-brand-dark text-sm max-w-lg mx-auto">
+            Search and share bank or credit card referral links — with transparent rewards and terms. Help friends. Earn perks.
           </p>
         </div>
 
-        {/* Auth / User Info */}
+        {/* Auth Section */}
         {!user ? (
-          <>
-            <p className="text-sm">Welcome! Sign in to get started.</p>
+          <div className="text-center space-y-4">
+            <p className="text-sm text-brand-dark">Sign in to submit your own referral.</p>
             <button
               onClick={() => signInWithPopup(auth, new GoogleAuthProvider())}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+              className="bg-brand-dark text-white px-6 py-2 rounded hover:bg-opacity-90 transition"
             >
               Sign in with Google
             </button>
-          </>
+          </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Image
-                src={user?.photoURL || '/default-avatar.png'}
-                alt="User Avatar"
-                width={90}
-                height={90}
-                className="rounded-full border object-cover"
-                // className="w-10 h-10 rounded-full border object-cover"
-              />
-              <div>
-                <p className="text-sm text-gray-700">Signed in as <strong>{user.displayName}</strong></p>
-                <p className="text-xs text-gray-500">{user.email}</p>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-4">
+                <Image
+                  src={user?.photoURL || '/default-avatar.png'}
+                  alt="User Avatar"
+                  width={70}
+                  height={70}
+                  className="rounded-full border object-cover"
+                />
+                <div>
+                  <p className="text-sm text-brand-dark">Welcome, <strong>{user.displayName}</strong></p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
               </div>
               <button
                 onClick={() => signOut(auth)}
-                className="ml-auto text-red-500 hover:underline text-sm"
+                className="bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
               >
-                Log out
+                🔓 Log Out
               </button>
             </div>
 
-            <div className="text-right">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <input
+                type="text"
+                placeholder="Search by bank name..."
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="flex-1 p-2 border rounded-md text-sm"
+              />
               <Link
                 href="/submit"
-                className="inline-block bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition mr-1 mt-2"
+                className="bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
               >
-                ➕ Submit a Referral
+                ➕ Submit Referral
               </Link>
             </div>
 
-            {/* Search Filter */}
-            <input
-              type="text"
-              placeholder="Search by bank..."
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-200"
-            />
-
-            {/* Referrals List */}
             <div className="space-y-4">
               {referrals.filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase())).length === 0 ? (
-                <p className="text-sm text-center text-gray-500">No referrals yet. Be the first to share one! 🙌</p>
+                <p className="text-sm text-center text-gray-500">No referrals found. Be the first to add one! 🙌</p>
               ) : (
                 referrals
                   .filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase()))
                   .map(ref => (
                     <ReferralCard
                       key={ref.id}
-                      ref={ref}
-                      currentUser={user?.uid}
+                      referral={{ ...ref, accountType: ref.accountType || 'Unknown', friendBenefit: ref.friendBenefit || 'None', cashbackAvailable: ref.cashbackAvailable ?? false, createdAt: ref.createdAt?.toDate?.().toISOString() || '' }}
+                      isOwner={ref.user === user?.uid}
                       onDelete={fetchReferrals}
                     />
                   ))
@@ -124,13 +137,15 @@ export default function Home() {
           </div>
         )}
 
-        {/* Footer and Contact Info */}
-        <div className="text-sm text-center text-gray-500 pt-10">
-          Spot an error or need help removing a referral?  
-          <br />
-          Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>
-          <br />
-          or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
+        {/* Footer */}
+        <div className="text-sm text-center text-gray-500 pt-10 space-y-1">
+          <p>Spot an error or want a referral removed?</p>
+          <p>
+            Email: <a href="mailto:ekaterina.shukh@gmail.com" className="text-brand-medium underline">ekaterina.shukh@gmail.com</a>
+          </p>
+          <p>
+            IG: <a href="https://instagram.com/katiash" className="text-brand-medium underline">@katiash</a>
+          </p>
         </div>
 
         <footer className="text-xs text-center text-gray-400">
