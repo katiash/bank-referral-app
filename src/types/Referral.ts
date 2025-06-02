@@ -11,6 +11,5 @@ export interface Referral {
     cashbackAvailable?: boolean;
     earningLimit?: string;
     user?: string; // ✅ this is used to match current user's UID
-    // uid?: string; // ✅ Added this line
     createdAt?: { toDate: () => Date };
   }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Toast from './Toast';
 
 type Referral = {
+  user: string;
   id: string;
   bank: string;
   referral: string;
