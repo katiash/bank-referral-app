@@ -201,7 +201,7 @@ export default function SubmitPageContent() {
             <label className="block text-sm font-medium text-brand-dark">
               Friend Benefit <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
             </label>
-            <p className="text-xs text-gray-500 mb-1">Encourages people to use your referral (e.g. "$100 bonus after signup").</p>
+            <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
             <input
               type="text"
               placeholder="$100 after 2 deposits"
