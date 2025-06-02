@@ -1,5 +1,6 @@
 // src/types/Referral.ts
 export interface Referral {
+    uid: string;
     id: string;
     bank: string;
     referral: string;

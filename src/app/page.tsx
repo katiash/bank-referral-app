@@ -1,5 +1,5 @@
 'use client';
-
+import { Plus } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import {
   GoogleAuthProvider,
@@ -8,15 +8,16 @@ import {
   onAuthStateChanged,
   User
 } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../utils/firebaseConfig';
 import ReferralCard from '../components/ReferralCard';
 import Link from 'next/link';
 import { Referral } from '../types/Referral';
 import Image from 'next/image';
-import TestBox from '../components/TestBox';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [filter, setFilter] = useState('');
@@ -31,6 +32,15 @@ export default function Home() {
   useEffect(() => {
     if (user) fetchReferrals();
   }, [user]);
+
+  const handleEdit = (id: string) => {
+    router.push(`/submit?id=${id}`);
+  };
+  
+  const handleDelete = async (id: string) => {
+    await deleteDoc(doc(db, 'referrals', id));
+    await fetchReferrals(); // Refresh the list
+  };
 
   const fetchReferrals = async () => {
     const snapshot = await getDocs(collection(db, 'referrals'));
@@ -110,13 +120,17 @@ export default function Home() {
                 onChange={(e) => setFilter(e.target.value)}
                 className="flex-1 p-2 border rounded-md text-sm"
               />
-              <Link
-                href="/submit"
-                className="bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
-              >
-                ➕ Submit Referral
-              </Link>
+             <Link
+  href="/submit"
+  className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
+><Plus className="w-4 h-4 text-white" />Submit Referral</Link>
             </div>
+
+            {user?.email === 'ekaterina.shukh@gmail.com' && (
+              <div className="text-xs text-center text-white bg-red-500 py-1 px-4 rounded-full w-fit mx-auto">
+                Admin Mode Enabled
+              </div>
+            )}
 
             <div className="space-y-4">
               {referrals.filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase())).length === 0 ? (
@@ -127,9 +141,13 @@ export default function Home() {
                   .map(ref => (
                     <ReferralCard
                       key={ref.id}
-                      referral={{ ...ref, accountType: ref.accountType || 'Unknown', friendBenefit: ref.friendBenefit || 'None', cashbackAvailable: ref.cashbackAvailable ?? false, createdAt: ref.createdAt?.toDate?.().toISOString() || '' }}
-                      isOwner={ref.user === user?.uid}
-                      onDelete={fetchReferrals}
+                      referral={{ ...ref, accountType: ref.accountType || 'Unknown', friendBenefit: ref.friendBenefit || 'None', cashbackAvailable: ref.cashbackAvailable ?? false, createdAt: typeof ref.createdAt?.toDate === 'function'
+                        ? ref.createdAt.toDate().toISOString()
+                        : '' }}
+                      isOwner={(ref.uid ?? '') === user?.uid || user?.email === 'ekaterina.shukh@gmail.com'}
+                      onEdit={() => handleEdit(ref.id)}
+                      onDelete={() => handleDelete(ref.id)}
+                      userEmail={user?.email || ''} // Pass user email for admin view
                     />
                   ))
               )}
