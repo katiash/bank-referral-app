@@ -1,23 +1,29 @@
+// 🚧 Updated SubmitPageContent.tsx with labels, descriptions, badges, and modern structure
+// 💡 Fully integrated with your working logic (edit, auth, toast, routing)
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
-import { useSearchParams } from 'next/navigation';
-import { doc,getDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  getDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { auth, db } from '../../../utils/firebaseConfig';
 import Toast from '../../components/Toast';
-import { serverTimestamp } from 'firebase/firestore';
 import Image from 'next/image';
-
 
 export default function SubmitPageContent() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
   const searchParams = useSearchParams();
   const referralId = searchParams.get('id');
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [showHelp, setShowHelp] = useState<boolean>(() => {
@@ -32,8 +38,9 @@ export default function SubmitPageContent() {
   const [referralTerms, setReferralTerms] = useState('');
   const [friendBenefit, setFriendBenefit] = useState('');
   const [accountType, setAccountType] = useState('');
-  const [cashbackAvailable, setCashbackAvailable] = useState('');
+  const [cashbackAvailable, setCashbackAvailable] = useState(false);
   const [earningLimit, setEarningLimit] = useState('');
+
   const toggleHelp = () => {
     const newState = !showHelp;
     setShowHelp(newState);
@@ -45,18 +52,16 @@ export default function SubmitPageContent() {
       setUser(currentUser);
       setLoading(false);
 
-    // 🚫 Redirect if not logged in
       if (!currentUser) {
         router.push('/');
         return;
-    }
+      }
 
-     // ✅ If user is logged in AND editing a referral
-     const loadReferral = async () => {
-      if (referralId) {
+      const loadReferral = async () => {
+        if (referralId) {
           const docRef = doc(db, 'referrals', referralId);
           const docSnap = await getDoc(docRef);
-    
+
           if (docSnap.exists()) {
             const data = docSnap.data();
             setBank(data.bank || '');
@@ -64,32 +69,30 @@ export default function SubmitPageContent() {
             setReferralTerms(data.referralTerms || '');
             setFriendBenefit(data.friendBenefit || '');
             setAccountType(data.accountType || '');
-            setCashbackAvailable(data.cashbackAvailable || '');
+            setCashbackAvailable(!!data.cashbackAvailable);
             setEarningLimit(data.earningLimit || '');
           }
         }
-    };
+      };
+
       loadReferral();
     });
+
     return () => unsubscribe();
-  },  [referralId, router]);
+  }, [referralId, router]);
 
   const handleSubmit = async () => {
     if (!bank || !referralLink || !user) return;
-
     const referralType = referralLink.startsWith('http') ? 'link' : 'code';
-    
 
     if (referralId) {
       const docRef = doc(db, 'referrals', referralId);
       const docSnap = await getDoc(docRef);
-
-     let createdAt = serverTimestamp();
-     if (docSnap.exists()) {
+      let createdAt = serverTimestamp();
+      if (docSnap.exists()) {
         const data = docSnap.data();
         createdAt = data.createdAt || serverTimestamp();
       }
-      // Update the existing referral
       await updateDoc(docRef, {
         bank,
         referral: referralLink,
@@ -98,8 +101,8 @@ export default function SubmitPageContent() {
         accountType,
         cashbackAvailable,
         earningLimit,
-        createdAt,// ✅ preserve original timestamp
-        updatedAt: serverTimestamp()
+        createdAt,
+        updatedAt: serverTimestamp(),
       });
     } else {
       await addDoc(collection(db, 'referrals'), {
@@ -107,13 +110,13 @@ export default function SubmitPageContent() {
         uid: user.uid,
         bank,
         referral: referralLink,
-        referralType: referralLink.startsWith('http') ? 'link' : 'code',
+        referralType,
         referralTerms,
         friendBenefit,
         accountType,
         cashbackAvailable,
         earningLimit,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
       });
     }
 
@@ -127,147 +130,154 @@ export default function SubmitPageContent() {
   if (loading) return <div className="p-6">Loading...</div>;
 
   return (
-    <main className="bg-gray-100 min-h-screen py-10 text-gray-800">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Heading */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2 text-green-700">Submit a Referral</h1>
-          <p className="text-sm text-gray-600">
-            Share a bank or card referral you’d like others to benefit from.
-          </p>
-        </div>
+    <main className="bg-brand-light min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-2xl mx-auto space-y-6 border border-brand-light">
+        <h2 className="text-2xl font-serif text-brand-dark text-center">➕ Submit a New Referral</h2>
 
-        {/* Avatar + Greeting */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4">
           <Image
             src={user?.photoURL || '/default-avatar.png'}
             alt="User Avatar"
-            width={90}
-            height={90}
+            width={70}
+            height={70}
             className="rounded-full border object-cover"
-            // className="w-10 h-10 rounded-full border object-cover"
           />
           <div>
-            <p className="text-sm text-gray-700">Welcome back, <strong>{user?.displayName}</strong></p>
+            <p className="text-sm text-brand-dark">Welcome, <strong>{user?.displayName}</strong></p>
             <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
         </div>
 
-        {/* Form */}
-        <div className="text-right mb-2">
-            <button
-                onClick={toggleHelp}
-                className="text-xs text-blue-600 underline hover:text-blue-800"
-            >
-                {showHelp ? 'Hide Tips' : 'Show Tips'}
-            </button>
-        </div>
-        {showHelp && (
-            <div className="mb-5 rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-900">
-                <p className="mb-2 font-medium">📝 Quick Tip:</p>
-                <p className="mb-2 leading-relaxed">
-                For now, most fields are optional — but you can always update or delete your referral later if needed.
-                </p>
-                <p className="mb-2 leading-relaxed">
-                Try to include helpful info for others. The <strong>Friend Benefit</strong> is especially useful — without it, your referral might not get used.
-                </p>
-                <ul className="list-disc ml-5 mb-2 text-yellow-800">
-                <li><strong>Bank Name</strong></li>
-                <li><strong>Referral Link or Code</strong></li>
-                <li><strong>Account Type</strong> (e.g. Credit, Checking)</li>
-                </ul>
-                <p className="mb-2 leading-relaxed">
-                Not sure if your card offers cashback? You can leave that blank or say “I don’t know.”  
-                A quick way to check is by logging into your bank portal — if you see options like “Convert to Cash” or “Pay Back with Rewards,” it probably does.
-                </p>
-                <p className="leading-relaxed">
-                The <strong>Referral Earning Limit</strong> is for your reference — most banks cap how many rewards you can receive per year from others using your code.
-                And if anything goes wrong, feel free to contact me using the links at the bottom of the page.
-                </p>
-            </div>
-            )}
-        <div className="space-y-4 mt-8">
-          <input
-            type="text"
-            placeholder="Bank name (e.g. Capital One)"
-            value={bank}
-            onChange={(e) => setBank(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Referral link or code"
-            value={referralLink}
-            onChange={(e) => setReferralLink(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Referral terms (referrer note)"
-            value={referralTerms}
-            onChange={(e) => setReferralTerms(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Friend benefit (what they get)"
-            value={friendBenefit}
-            onChange={(e) => setFriendBenefit(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Account type (e.g. Credit, Checking)"
-            value={accountType}
-            onChange={(e) => setAccountType(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Cashback available? (Yes / No)"
-            value={cashbackAvailable}
-            onChange={(e) => setCashbackAvailable(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Referrer earning limit only (e.g. $500/year) Typically, this should not matter to friends/family who use the link/code, ie will still work on their end."
-            value={earningLimit}
-            onChange={(e) => setEarningLimit(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-4 pt-4">
-          <button
-            onClick={handleSubmit}
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition w-full sm:w-auto"
-          >
-            Submit Referral
+        <div className="text-right">
+          <button onClick={toggleHelp} className="text-xs text-brand-medium underline hover:text-brand-dark">
+            {showHelp ? 'Hide Tips' : 'Show Tips'}
           </button>
-
-          <Link
-            href="/"
-            className="border border-gray-300 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100 transition w-full sm:w-auto text-center"
-          >
-            ⬅️ Cancel
-          </Link>
         </div>
 
-        <Toast show={showToast} message="✅ Referral submitted!" type="success" />      
+        {showHelp && (
+          <div className="mb-5 rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-900">
+            <p className="mb-2 font-medium">📝 Quick Tip:</p>
+            <ul className="list-disc ml-5 mb-2 text-yellow-800 space-y-1">
+              <li><strong>Bank Name</strong>: Displayed publicly. Try to be consistent with platform spelling.</li>
+              <li><strong>Referral Link or Code</strong>: This is what friends will use to sign up.</li>
+              <li><strong>Friend Benefit</strong>: Be clear about what they get — it helps them choose!</li>
+              <li><strong>Account Type</strong>: Credit card? Checking? Helps users find the right type.</li>
+              <li><strong>Private Notes</strong>: Use Referral Terms and Earning Limit to track personal info (won’t be shown).</li>
+            </ul>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {/* PUBLIC FIELDS */}
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Bank Name <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">Used as the title of the referral listing.</p>
+            <input
+              type="text"
+              placeholder="e.g. Capital One"
+              value={bank}
+              onChange={(e) => setBank(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Referral Link or Code <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">This is what users will copy or click to join.</p>
+            <input
+              type="text"
+              placeholder="Paste link or code here"
+              value={referralLink}
+              onChange={(e) => setReferralLink(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Friend Benefit <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
+            <input
+              type="text"
+              placeholder="$100 after 2 deposits"
+              value={friendBenefit}
+              onChange={(e) => setFriendBenefit(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Account Type <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
+            <input
+              type="text"
+              placeholder="e.g. Credit"
+              value={accountType}
+              onChange={(e) => setAccountType(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={cashbackAvailable}
+              onChange={(e) => setCashbackAvailable(e.target.checked)}
+              className="h-4 w-4 text-brand-gold border-gray-300 rounded"
+            />
+            <label className="text-sm text-brand-dark">
+              💵 This referral offers cashback <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+            </label>
+          </div>
+
+          {/* PRIVATE FIELDS */}
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Referral Terms (notes) <span className="ml-1 text-gray-500 text-xs">🔒 Private</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">Only visible to you. Use it for notes, restrictions, or tracking.</p>
+            <input
+              type="text"
+              placeholder="e.g. Only 10 codes per year allowed"
+              value={referralTerms}
+              onChange={(e) => setReferralTerms(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-dark">
+              Referrer Earning Limit <span className="ml-1 text-gray-500 text-xs">🔒 Private</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">For your records — not shown to users.</p>
+            <input
+              type="text"
+              placeholder="e.g. $500/year"
+              value={earningLimit}
+              onChange={(e) => setEarningLimit(e.target.value)}
+              className="w-full p-3 rounded-md border border-gray-300 text-sm"
+            />
+          </div>
+
+          <div className="flex gap-4 pt-2">
+            <button onClick={handleSubmit} className="bg-brand-gold text-white font-semibold py-3 px-6 rounded-md hover:bg-opacity-90 transition w-full sm:w-auto">
+              Submit Referral
+            </button>
+            <Link href="/" className="border border-gray-300 text-gray-600 px-6 py-3 rounded-md hover:bg-gray-100 transition w-full sm:w-auto text-center">
+              ← Cancel
+            </Link>
+          </div>
+        </div>
+
+        <Toast show={showToast} message="✅ Referral submitted!" type="success" />
       </div>
-
-       {/* Footer and Contact Info */}
-       <div className="mt-12 text-sm text-center text-gray-500">
-            Spot an error or want help removing or updating a referral?  
-            <br />
-            Email me at <a href="mailto:ekaterina.shukh@gmail.com" className="text-blue-600 underline">ekaterina.shukh@gmail.com</a>  
-            or message me on Instagram <a href="https://instagram.com/katiash" className="text-blue-600 underline">@katiash</a>.
-        </div>
-        <footer className="text-xs text-center text-gray-400">
-          Made with 💛 by Katia
-        </footer>
     </main>
   );
 }

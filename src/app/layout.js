@@ -31,9 +31,10 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       </head>
-      <body
+      {/* <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      > */}
+      <body className="bg-watermark min-h-screen">
         {children}
       </body>
     </html>

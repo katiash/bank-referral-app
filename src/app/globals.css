@@ -2,16 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
-/* 🔽 Custom animations and utility overrides below this line */
-
+/* Optional animations */
 @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Optional force inclusion (can be removed later) */
+@layer utilities {
+  .force-tailwind {
+    @apply bg-brand-light text-brand-dark;
   }
-  
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
+}
+@layer utilities {
+  .force-tailwind-debug {
+    @apply bg-brand-light text-brand-dark;
   }
+}
