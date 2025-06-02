@@ -215,7 +215,7 @@ export default function SubmitPageContent() {
             <label className="block text-sm font-medium text-brand-dark">
               Account Type <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
             </label>
-            <p className="text-xs text-gray-500 mb-1">Like "Credit Card", "Checking", or "Savings".</p>
+            <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
             <input
               type="text"
               placeholder="e.g. Credit"
