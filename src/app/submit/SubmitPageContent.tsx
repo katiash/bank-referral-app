@@ -171,7 +171,7 @@ export default function SubmitPageContent() {
           {/* PUBLIC FIELDS */}
           <div>
             <label className="block text-sm font-medium text-brand-dark">
-              Bank Name <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+              Bank Name <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
             <p className="text-xs text-gray-500 mb-1">Used as the title of the referral listing.</p>
             <input
@@ -185,7 +185,7 @@ export default function SubmitPageContent() {
 
           <div>
             <label className="block text-sm font-medium text-brand-dark">
-              Referral Link or Code <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+              Referral Link or Code <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
             <p className="text-xs text-gray-500 mb-1">This is what users will copy or click to join.</p>
             <input
@@ -199,9 +199,11 @@ export default function SubmitPageContent() {
 
           <div>
             <label className="block text-sm font-medium text-brand-dark">
-              Friend Benefit <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+              Friend Benefit <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
-            <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
+            <p className="text-xs text-gray-500 mb-1">
+              Encourages people to use your referral (e.g. "$100 bonus after signup").
+              </p>
             <input
               type="text"
               placeholder="$100 after 2 deposits"
@@ -213,7 +215,7 @@ export default function SubmitPageContent() {
 
           <div>
             <label className="block text-sm font-medium text-brand-dark">
-              Account Type <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+              Account Type <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
             <p className="text-xs text-gray-500 mb-1">Like &quot;Credit Card&quot;, &quot;Checking&quot;, or &quot;Savings&quot;.</p>
             <input
@@ -233,7 +235,7 @@ export default function SubmitPageContent() {
               className="h-4 w-4 text-brand-gold border-gray-300 rounded"
             />
             <label className="text-sm text-brand-dark">
-              💵 This referral offers cashback <span className="ml-1 text-brand-gold text-xs">🔓 Public</span>
+              💵 This referral offers cashback <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
           </div>
 
