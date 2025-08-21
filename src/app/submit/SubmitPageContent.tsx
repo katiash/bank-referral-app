@@ -202,7 +202,7 @@ export default function SubmitPageContent() {
               Friend Benefit <span className="ml-1 text-brand-gold text-xs">👥 Public</span>
             </label>
             <p className="text-xs text-gray-500 mb-1">
-              Encourages people to use your referral (e.g. "$100 bonus after signup").
+              Encourages people to use your referral (e.g. &quot;$100 bonus after signup&quot;).
               </p>
             <input
               type="text"
