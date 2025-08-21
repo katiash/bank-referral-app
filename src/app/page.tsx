@@ -1,4 +1,5 @@
 'use client';
+
 import { Plus } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import {
@@ -30,16 +31,16 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (user) fetchReferrals();
-  }, [user]);
+    fetchReferrals();
+  }, []);
 
   const handleEdit = (id: string) => {
     router.push(`/submit?id=${id}`);
   };
-  
+
   const handleDelete = async (id: string) => {
     await deleteDoc(doc(db, 'referrals', id));
-    await fetchReferrals(); // Refresh the list
+    await fetchReferrals();
   };
 
   const fetchReferrals = async () => {
@@ -59,17 +60,9 @@ export default function Home() {
   };
 
   return (
-
-  <main className="bg-brand-light font-sans bg-watermark min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-  
-      {/* 🔍 TEST BLOCK START */}
-      {/* <div className="bg-brand-gold text-brand-dark p-6 rounded shadow text-center">
-        ✅ Tailwind *is working* with brand colors!
-      </div> */}
-      {/* 🔍 TEST BLOCK END */}
+    <main className="bg-brand-light font-sans bg-watermark min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-10">
-    
-        {/* Title and Description */}
+        {/* Title */}
         <div className="text-center">
           <h1 className="text-4xl font-serif text-brand-dark mb-2">💸 Bank Referral Finder</h1>
           <p className="text-brand-dark text-sm max-w-lg mx-auto">
@@ -89,7 +82,7 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
                 <Image
@@ -120,10 +113,12 @@ export default function Home() {
                 onChange={(e) => setFilter(e.target.value)}
                 className="flex-1 p-2 border rounded-md text-sm"
               />
-             <Link
-  href="/submit"
-  className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
-><Plus className="w-4 h-4 text-white" />Submit Referral</Link>
+              <Link
+                href="/submit"
+                className="inline-flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded-md text-sm hover:bg-opacity-90 transition"
+              >
+                <Plus className="w-4 h-4 text-white" />Submit Referral
+              </Link>
             </div>
 
             {user?.email === 'ekaterina.shukh@gmail.com' && (
@@ -131,34 +126,37 @@ export default function Home() {
                 Admin Mode Enabled
               </div>
             )}
-
-            <div className="space-y-4">
-              {referrals.filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase())).length === 0 ? (
-                <p className="text-sm text-center text-gray-500">No referrals found. Be the first to add one! 🙌</p>
-              ) : (
-                referrals
-                  .filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase()))
-                  .map(ref => (
-                    <ReferralCard
-                      key={ref.id}
-                      referral={{ ...ref,
-                        user: ref.user || 'Unknown', 
-                        accountType: ref.accountType || 'Unknown', 
-                        friendBenefit: ref.friendBenefit || 'None', 
-                        cashbackAvailable: ref.cashbackAvailable ?? false, 
-                        createdAt: typeof ref.createdAt?.toDate === 'function'
-                        ? ref.createdAt.toDate().toISOString()
-                        : '' }}
-                      isOwner={(ref.uid ?? '') === user?.uid || user?.email === 'ekaterina.shukh@gmail.com'}
-                      onEdit={() => handleEdit(ref.id)}
-                      onDelete={() => handleDelete(ref.id)}
-                      userEmail={user?.email || ''} // Pass user email for admin view
-                    />
-                  ))
-              )}
-            </div>
-          </div>
+          </>
         )}
+
+        {/* Referrals List - Always Visible */}
+        <div className="space-y-4">
+          {referrals.filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase())).length === 0 ? (
+            <p className="text-sm text-center text-gray-500">No referrals found. Be the first to add one! 🙌</p>
+          ) : (
+            referrals
+              .filter(ref => ref.bank.toLowerCase().includes(filter.toLowerCase()))
+              .map(ref => (
+                <ReferralCard
+                  key={ref.id}
+                  referral={{
+                    ...ref,
+                    user: ref.user || 'Unknown',
+                    accountType: ref.accountType || 'Unknown',
+                    friendBenefit: ref.friendBenefit || 'None',
+                    cashbackAvailable: ref.cashbackAvailable ?? false,
+                    createdAt: typeof ref.createdAt?.toDate === 'function'
+                      ? ref.createdAt.toDate().toISOString()
+                      : ''
+                  }}
+                  isOwner={(ref.uid ?? '') === user?.uid || user?.email === 'ekaterina.shukh@gmail.com'}
+                  onEdit={() => handleEdit(ref.id)}
+                  onDelete={() => handleDelete(ref.id)}
+                  userEmail={user?.email || ''}
+                />
+              ))
+          )}
+        </div>
 
         {/* Footer */}
         <div className="text-sm text-center text-gray-500 pt-10 space-y-1">
